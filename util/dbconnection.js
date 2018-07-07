@@ -7,4 +7,5 @@ var pool = mysql.createPool({
 	database: 'freeads'
 });
 
+
 module.exports = pool;

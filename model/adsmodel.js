@@ -4,8 +4,8 @@ var ads = {
 
 	// all ads related querys	
 	addAds: function(inputData, cb){
-
-		var sql = "insert into ads(TITLE, TAGSKEYS, DISCRIPTION, UPLOADIMG, WEBSITE, CATEGORYID, SUB_CATEGORY, STATEID, CITYID, LOCALITYID, AREA, STATUS, CREATIONDATE, UPDATIONDATE, EXT)values('"+inputData.tit+"','"+inputData.tags+"','"+inputData.dis+"','"+inputData.img+"','"+inputData.web+"',"+inputData.c1name+",'"+inputData.scat+"',"+inputData.sname+","+inputData.cityname+","+inputData.lname+",'"+inputData.area+"','"+inputData.status+"', now(), now(), '"+inputData.ext+"')";
+	var myExt = inputData.ext.split('/');
+		var sql = "insert into ads(TITLE, TAGSKEYS, DISCRIPTION, UPLOADIMG, WEBSITE, CATEGORYID, SUB_CATEGORY, STATEID, CITYID, LOCALITYID, AREA, STATUS, CREATIONDATE, UPDATIONDATE, EXT)values('"+inputData.tit+"','"+inputData.tags+"','"+inputData.dis+"','"+inputData.img+"','"+inputData.web+"',"+inputData.c1name+",'"+inputData.scat+"',"+inputData.sname+","+inputData.cityname+","+inputData.lname+",'"+inputData.area+"','"+inputData.status+"', now(), now(), '"+myExt[1]+"')";
 		console.log('this is working='+sql);
 		pool.getConnection(function(error, connection){
 			if (error) {
@@ -49,7 +49,7 @@ var ads = {
 			where = " WHERE STATUS = '"+adStatus+"'";
 		}
 		*/
-		var limitQuery = " LIMIT 0, 20";
+		var limitQuery = " LIMIT 0, 100";
 		var sql = "select * from ads "+where+ " "+limitQuery;
 
 		console.log('concate query'+sql);
@@ -131,8 +131,8 @@ var ads = {
 			connection.release();
 		});
 	},
-	changeStatus: function(inputData, cb){
-		var sql = "update ads set STATUS='"+inputData.status+"' where ADID="+inputData.aid;
+	actionStatus: function(inputData, aid, cb){
+		var sql = "update ads set STATUS='"+inputData+"' where ADID="+aid;
 		// console.log('qeury is woring='+sql);
 		pool.getConnection(function(error, connection){
 			if (error) {
@@ -150,7 +150,7 @@ var ads = {
 			}
 			connection.release();
 		});
-	},
+	}
 
 }
 

@@ -16,6 +16,7 @@ var locality = require('./routes/locality');
 var category = require('./routes/category');
 var users = require('./routes/users');
 var ads = require('./routes/ads');
+var login = require('./routes/loginboth');
 
 var app = express();
 app.use(cors());
@@ -39,6 +40,7 @@ app.use('/', locality);
 app.use('/', category);
 app.use('/', users);
 app.use('/', ads);
+app.use('/', login);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

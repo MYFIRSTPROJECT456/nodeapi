@@ -59,7 +59,7 @@ router.post('/addadsdata', function(req, res, next){
  	var tempPath = files.image.path;
  	
  	var type = files.image.type;
- 	console.log('etxt12', type);
+ 	// console.log('etxt12', type);
   	
     var inputfielddata5 = {
 		tit : data.tit,
@@ -84,7 +84,10 @@ router.post('/addadsdata', function(req, res, next){
 		}
 		else{
 			console.log('Last Insert Id'+result.insertId);
-			var destPath= __dirname+'/../public/assets/'+inputfielddata5.img+'_'+result.insertId;
+			console.log('test',inputfielddata5.img);
+			var imgExt = inputfielddata5.img.split('.');
+			// console.log('01', datatest);
+			var destPath= __dirname+'/../public/assets/'+result.insertId+'.'+imgExt[1];
 			// console.log('00', destPath);
 			fs.rename(tempPath, destPath, function (error) {
 			  if (error){
@@ -93,21 +96,22 @@ router.post('/addadsdata', function(req, res, next){
 						status: 1,
 						status_msg: "failed"
 					}
-				const proxy = http.createServer((req, res) => {
-				  res.writeHead(500, { 'Content-Type': 'application/json' });
-				  res.send(resp);
-				})
+					res.send(resp);
+				// const proxy = http.createServer((req, res) => {
+				//   res.writeHead(500, { 'Content-Type': 'application/json' });
+				//   res.send(resp);
+				// })
 			  }else{
 			  	console.log('come02');
 			  	var resp = {
 						status: 0,
 						status_msg: "success"
 					}
-				// res.status(200).send(resp);
-				const proxy = http.createServer((req, res) => {
-				  res.writeHead(200, { 'Content-Type': 'application/json' });
-				  res.send(resp);
-				})
+				res.status(200).send(resp);
+				// const proxy = http.createServer((req, res) => {
+				//   res.writeHead(200, { 'Content-Type': 'application/json' });
+				//   res.send(resp);
+				// })
 			  }
 			});
 		}
@@ -127,23 +131,7 @@ router.get('/updateads', function(req, res, next){
 	});
 });
 router.post('/updateadsdata', function(req, res, next){
-	console.log('01',req.body, '02',req.query)
-	// var inputfielddata5 = {
-	// 	aid : req.body.aid,
-	// 	tit : req.body.tit,
-	// 	tags : req.body.tags,
-	// 	dis : req.body.dis,
-	// 	img : req.body.img,
-	// 	web : req.body.web,
-	// 	c1id : req.body.c1id,
-	// 	scid : req.body.scid,
-	// 	sid : req.body.sid,
-	// 	cid : req.body.cid	,
-	// 	lid : req.body.lid,
-	// 	area : req.body.area,
-	// 	status : req.body.status,
-	// }
-	// console.log(inputfielddata5);
+	// console.log('01',req.body, '02',req.query)
 	adsmodel.updateAds(req.body, req.query, function(error, result){
 		if (error) {
 			var resp = {
@@ -181,21 +169,16 @@ router.get('/deleteads', function(req, res, next){
 	});
 });
 
-router.get('/changestatus', function(req, res, next){
-	var id = req.query.adsid;
-	var action = req.query.action;
-	var status ='';
-	if (action == 'Reject') {
-		status = 'Rejected';
-	} else if(action == 'Approve') {
-		status = 'Approved';
+router.post('/changestatus',(req, res, next)=>{
+	var actionData;
+	var action = req.body.ActionData;
+	if(action == 'Approved'){
+		actionData = "Rejected";
 	}
-
-	var inputData = {
-		aid:id,
-		status:status
+	else if(action == 'Pending'){
+		actionData = "Approved"
 	}
-	adsmodel.changeStatus(inputData, function(error, result){
+	adsmodel.actionStatus(actionData, req.body.aid,function(error, result){
 		if (error) {
 			var resp = {
 				status:1,
@@ -212,5 +195,5 @@ router.get('/changestatus', function(req, res, next){
 		}
 	});
 });
-
+	
 module.exports = router;
